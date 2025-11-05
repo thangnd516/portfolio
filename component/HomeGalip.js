@@ -1,5 +1,8 @@
+"use client";
+
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 export default function Home() {
 
   const certifications = [
@@ -62,10 +65,69 @@ export default function Home() {
     },
 
   ];
+
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("theme") === "dark";
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    // đồng bộ class dark theo state
+    document.documentElement.classList.toggle("dark", isDark);
+  }, [isDark]);
+
+  const toggleTheme = () => {
+    const newTheme = isDark ? "light" : "dark";
+    setIsDark(!isDark);
+    localStorage.setItem("theme", newTheme);
+  };
+
+
+  const [time, setTime] = useState("");
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setTime(
+        now.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        })
+      );
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+
   return (
     <div className="min-h-screen bg-white text-gray-800 px-8 py-10">
       {/* Navigation Tabs */}
       <div className="flex flex-wrap justify-center gap-[25px] mb-10 text-sm font-medium text-gray-700 py-[19px] px-0">
+        <div className="">
+          <h1 className="text-3xl font-bold text-black dark:text-white mb-6">
+            {isDark ? "🌙 Dark Mode" : "☀️ Light Mode"}
+          </h1>
+          <button
+            onClick={toggleTheme}
+            className="px-4 py-2 rounded-lg border border-gray-400 dark:border-gray-600 dark:text-white transition"
+          >
+            Toggle Theme
+          </button>
+        </div>
+        {/* <button
+          onClick={toggleTheme}
+          className="flex items-center gap-2 px-4 py-2 rounded-md border border-gray-300 
+                 dark:border-gray-700 dark:bg-gray-800 dark:text-white 
+                 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+        >
+          {isDark ? <Image src="/images/moon.png" sizes="16" width={10} height={10} /> : <Image src="/images/sun.png" sizes="16" width={10} height={10} />}
+          <span>{isDark ? "Light Mode" : "Dark Mode"}</span>
+        </button> */}
         {["Intro", "About", "Work", "Experience", "Education", "Stack", "Skill", "Blog", "Contact"].map(
           (item) => (
             <span
@@ -263,6 +325,71 @@ export default function Home() {
           </div>
         </div>
       </section>
+      {/* footer */}
+      <div className="flex justify-center gap-[100px]">
+        {/* Left Side */}
+        <div className="">
+          <h2 className="text-xl font-semibold mb-2">Let&apos;s talk</h2>
+          <div className="border-l border-[#eee] border-l-[1px] pl-[15px]">
+            <p>
+              Time for me:{" "}
+              <span className="font-semibold text-black dark:text-white">
+                {time || "Loading..."} AM
+              </span>
+            </p>
+            <p className="flex items-center gap-2">
+              <Image src="/images/gmail.png" className="pr-[5px]" sizes="16" width={10} height={10} /> johnsmith@gmail.com
+            </p>
+            <p className="flex items-center gap-2">
+              <Image src="/images/iphone.png" className="pr-[5px]" sizes="16" width={10} height={10} /> (123) 456 7890
+            </p>
+            <div className="flex flex-col gap-2 mt-2">
+              <p className="font-medium">Socials:</p>
+              <a href="#" className="flex items-center gap-2 hover:text-blue-500">
+                <Image src="/images/linkedin.png" className="pr-[5px]" sizes="16" width={10} height={10} /> LinkedIn
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side */}
+        <div>
+          <h2 className="text-xl font-semibold mb-3">Reach out:</h2>
+          <form className="flex flex-col gap-3">
+            <input
+              type="text"
+              placeholder="Your Name"
+              className="h-[30px] w-[300px] p-[6px] m-[6px] bg-[#eee]"
+            />
+
+            <input
+              type="email"
+              placeholder="Your Email Address"
+            className="h-[30px] w-[300px] p-[6px] m-[6px] bg-[#eee]"
+            />
+
+            <textarea
+              placeholder="Your Message"
+              rows="4"
+              className="h-[60px] w-[300px] p-[6px] m-[6px] bg-[#eee]"
+            />
+            <button
+              type="submit"
+              className="h-[30px] w-[315px] p-[6px] m-[6px] bg-[#eee]"
+            >
+              Send Message
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-center mt-[20px]">
+        <div className="flex justify-center border-t border-[#eee] pt-[10px] w-[50%]">
+          <span>Designed in Framer By Galip</span>
+          <span>© Copyright 2024</span>
+        </div>
+      </div>
+
     </div>
   );
 }
