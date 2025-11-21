@@ -367,7 +367,7 @@ export default function Home() {
               placeholder="Your Email Address"
             className="h-[30px] w-[300px] p-[6px] m-[6px] bg-[#eee]"
             />
-
+ 
             <textarea
               placeholder="Your Message"
               rows="4"
